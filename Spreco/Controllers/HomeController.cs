@@ -31,8 +31,7 @@ namespace Spreco.Controllers
                           clientid +
                           "&response_type=code"+
                           "&redirect_uri=https://localhost:44336/home/callback" +
-                          "&scope=user-read-private%20user-read-email" +
-                          "&response_type=token" +
+                          "&scope=user-read-private%20user-read-email%20user-read-recently-played%20user-top-read" +
                           "&state=123";
 
             ViewBag.AuthUrl = url;
@@ -41,12 +40,11 @@ namespace Spreco.Controllers
         }
         
 
-        public async Task<IActionResult> CallbackAsync(string code)
+        public IActionResult Callback(string code)
         {
             // things are the # are not even sent to the server so we cant see it here
 
             // make a post request to get access and refresh tokens 
-
             var client = _clientFactory.CreateClient(); 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("sprecoid") + ":" + Environment.GetEnvironmentVariable("sprecosecret"))));
 
@@ -57,9 +55,12 @@ namespace Spreco.Controllers
                         new KeyValuePair<string, string>("grant_type", "authorization_code"),
              });
 
+            // using .Result causes the thread to block until the async function is done so consider changing this to make it faster 
             var response = client.PostAsync("https://accounts.spotify.com/api/token", formContent).Result;
 
             var responseContent = response.Content;
+
+            // using .Result causes the thread to block until the async function is done so consider changing this to make it faster 
             string responseString = responseContent.ReadAsStringAsync().Result;
 
             // access and refresh tokens are in this responsestring 
