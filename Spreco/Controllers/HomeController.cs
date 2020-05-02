@@ -26,6 +26,7 @@ namespace Spreco.Controllers
 
         public IActionResult Index()
         {
+            // setting up the url to take the user through spotify auth 
             string clientid = Environment.GetEnvironmentVariable("sprecoid");
             string url = "https://accounts.spotify.com/authorize?client_id=" +
                           clientid +
@@ -39,7 +40,41 @@ namespace Spreco.Controllers
             return View();
         }
         
+        // this is working 
+        private void getRecentTracks(string access_token)
+        {
+            var client = _clientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+            var response = client.GetAsync("https://api.spotify.com/v1/me/player/recently-played").Result;
 
+            string responseString = response.Content.ReadAsStringAsync().Result; 
+
+            Console.WriteLine(responseString); 
+        }
+
+
+        // this worked 
+        // need to pass in artist id, track id
+        private void getSimilarTracks(string access_token)
+        {
+            // need to pass this in later 
+            string artist = "0Y5tJX1MQlPlqiwlOH1tJY";
+            string track = "3dtBVBClM5ms0qCBBrqpUb"; 
+
+            var client = _clientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+
+            string url = "https://api.spotify.com/v1/recommendations?" +
+                          "seed_artists=" + artist +
+                          "&seed_tracks=" + track; 
+
+            var response = client.GetAsync(url).Result;
+
+            string responseString = response.Content.ReadAsStringAsync().Result;
+
+            Console.WriteLine(responseString);
+
+        }
         public IActionResult Callback(string code)
         {
             // things are the # are not even sent to the server so we cant see it here
@@ -72,15 +107,18 @@ namespace Spreco.Controllers
 
             Console.WriteLine(access_token);
             Console.WriteLine(refresh_token);
-            Console.WriteLine(expires_in); 
+            Console.WriteLine(expires_in);
 
             // now we can use the api and get some actual information 
 
+            // first we need to get the recently played tracks - we could make a class to store the information we need 
+            // second we need to get tracks that are similar to each recently played track and map them together 
+            // third we need to get all the cover at and titles for all tracks to display 
+            // lastly we need to make it look good 
+
+            getSimilarTracks(access_token); 
+
             return View(); 
-        }
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
