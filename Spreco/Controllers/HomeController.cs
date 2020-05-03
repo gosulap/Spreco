@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,8 +13,50 @@ using Spreco.Models;
 
 namespace Spreco.Controllers
 {
+    public class Track
+    {
+        private string track_id;
+        private string artist_id;
+        private string track_name;
+        private string artist_name;
+        private List<string> images;
+
+        public Track(string t_id, string a_id, string t_name, string a_name, List<string> images)
+        {
+            // could get rid of the "this" but left it in for clarity 
+            this.track_id = t_id;
+            this.artist_id = a_id;
+            this.track_name = t_name;
+            this.artist_name = a_name;
+            this.images = new List<string>(images);
+        }
+
+        public string getTrackId()
+        {
+            return this.track_id;
+        }
+        public string getArtistId()
+        {
+            return this.artist_id;
+        }
+        public string getTrackName()
+        {
+            return this.track_name;
+        }
+        public string getArtistName()
+        {
+            return this.artist_name;
+        }
+        public List<string> getImages()
+        {
+            return this.images;
+        }
+    }
+
+
     public class HomeController : Controller
     {
+
         private readonly ILogger<HomeController> _logger;
 
         private readonly IHttpClientFactory _clientFactory; 
@@ -41,39 +84,106 @@ namespace Spreco.Controllers
         }
         
         // this is working 
-        private void getRecentTracks(string access_token)
+        // need this to return an array of tracks
+        // ITLL GIVE US DUPLICATE TRACKS SO ELIMINATE ONES WE HAVE ALREADY SEEN
+        private List<Track> getRecentTracks(string access_token)
         {
+
+            List<Track> tracks = new List<Track>(); 
+
             var client = _clientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+
             var response = client.GetAsync("https://api.spotify.com/v1/me/player/recently-played").Result;
+            string responseString = response.Content.ReadAsStringAsync().Result;
 
-            string responseString = response.Content.ReadAsStringAsync().Result; 
+            Console.WriteLine("response");
 
-            Console.WriteLine(responseString); 
+            var data = JObject.Parse(responseString); 
+
+            foreach(var track in data["items"])
+            {
+                var track_object = JObject.Parse(track.ToString())["track"];
+                var track_name = track_object["name"];
+                var track_id = track_object["id"];
+                var artist_id = track_object["artists"][0]["id"];
+                var artist_name = track_object["artists"][0]["name"];
+                
+
+                List<string> image_urls = new List<string>();
+
+                image_urls.Add((string)track_object["album"]["images"][0]["url"]);
+                image_urls.Add((string)track_object["album"]["images"][1]["url"]);
+                image_urls.Add((string)track_object["album"]["images"][2]["url"]);
+
+                Track current = new Track((string) track_id, (string) artist_id, (string) track_name, (string) artist_name, image_urls);
+
+                Console.WriteLine(current.getTrackName());
+                Console.WriteLine(current.getArtistName());
+                Console.WriteLine(current.getImages()[0]);
+
+                tracks.Add(current); 
+
+            }
+
+
+            return tracks; 
+           
         }
 
 
         // this worked 
+        // need to get this to return an array of tracks 
         // need to pass in artist id, track id
-        private void getSimilarTracks(string access_token)
+        // we should also check for similar tracks that the user does not already have in a playlist 
+        private List<Track> getSimilarTracks(string access_token)
         {
+
+            List<Track> tracks = new List<Track>(); 
+
             // need to pass this in later 
-            string artist = "0Y5tJX1MQlPlqiwlOH1tJY";
-            string track = "3dtBVBClM5ms0qCBBrqpUb"; 
+            string artist_test = "0Y5tJX1MQlPlqiwlOH1tJY";
+            string track_test = "3dtBVBClM5ms0qCBBrqpUb"; 
 
             var client = _clientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
 
             string url = "https://api.spotify.com/v1/recommendations?" +
-                          "seed_artists=" + artist +
-                          "&seed_tracks=" + track; 
+                          "seed_artists=" + artist_test +
+                          "&seed_tracks=" + track_test; 
 
             var response = client.GetAsync(url).Result;
 
             string responseString = response.Content.ReadAsStringAsync().Result;
 
-            Console.WriteLine(responseString);
+            var data = JObject.Parse(responseString);
 
+            foreach (var track in data["tracks"])
+            {
+                var track_object = JObject.Parse(track.ToString());
+                var track_name = track_object["name"];
+                var track_id = track_object["id"];
+                var artist_id = track_object["artists"][0]["id"];
+                var artist_name = track_object["artists"][0]["name"];
+
+
+                List<string> image_urls = new List<string>();
+
+                image_urls.Add((string)track_object["album"]["images"][0]["url"]);
+                image_urls.Add((string)track_object["album"]["images"][1]["url"]);
+                image_urls.Add((string)track_object["album"]["images"][2]["url"]);
+
+                Track current = new Track((string)track_id, (string)artist_id, (string)track_name, (string)artist_name, image_urls);
+
+                Console.WriteLine(current.getTrackName());
+                Console.WriteLine(current.getArtistName());
+                Console.WriteLine(current.getImages()[0]);
+
+                tracks.Add(current);
+
+            }
+
+            return tracks; 
         }
         public IActionResult Callback(string code)
         {
@@ -116,8 +226,16 @@ namespace Spreco.Controllers
             // third we need to get all the cover at and titles for all tracks to display 
             // lastly we need to make it look good 
 
-            getSimilarTracks(access_token); 
 
+            // maybe add the webplayer so people can try a song out right there 
+
+
+            // https://api.spotify.com/v1/me/tracks/contains 
+            // this check if one or more tracks is already saved by the user in "your songs" 
+
+            //List<Track> recently_played = getRecentTracks(access_token); 
+
+            Console.WriteLine(getSimilarTracks(access_token)); 
             return View(); 
         }
 
