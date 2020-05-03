@@ -4,3 +4,17 @@
 }
 
 <h1>Callback</h1>
+@foreach (var item in ViewBag.mapping)
+{
+    <ul>
+        <li>
+            @item.Key.getTrackName()
+        <ul>
+            @foreach (var subItem in item.Value)
+            {
+                <li>@subItem.getTrackName()</li>
+            }
+        </ul>
+    </li>
+</ul>
+}
