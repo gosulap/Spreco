@@ -3,6 +3,9 @@
     ViewData["Title"] = "Callback";
 }
 
+<link rel="stylesheet" href="~/css/callback.css" />
+
+<!--
 <div class="row">
     <div class="col-6">
         <ul>
@@ -28,7 +31,20 @@
         }
     </div>
 </div>
+ -->
 
+@foreach (var item in ViewBag.mapping)
+{
+    <div class= "parallax" id=@item.Key.getImages()[0]></div>
+    <div class="similar-information">
+        <ul>
+            @foreach (var subItem in item.Value)
+            {
+                <li>@subItem.getTrackName() by @subItem.getArtistName()</li>
+            }
+        </ul>
+    </div>
+}
 
 
 <script src="~/js/callback.js" asp-append-version="true"></script>

@@ -11,10 +11,13 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Spreco.Models;
 
+// note: use image_urls[0] for parallax 
+
 /*
  * Things to add/change 
+ * 0 - parallax web design 
  * 1 - need to check if similar song already exists in users saved music - if it does dont show it 
- * 2 - add button next to each song "save songs" 
+ * 2 - add button next to each song "save songs" - or maybe "add to queue button" 
  * 3 - implement web player so people can listen to the song right here 
 */
 
@@ -184,6 +187,10 @@ namespace Spreco.Controllers
                 image_urls.Add((string)track_object["album"]["images"][0]["url"]);
                 image_urls.Add((string)track_object["album"]["images"][1]["url"]);
                 image_urls.Add((string)track_object["album"]["images"][2]["url"]);
+
+                Console.WriteLine(image_urls[0]);
+                Console.WriteLine(image_urls[1]);
+                Console.WriteLine(image_urls[2]);
 
                 Track current = new Track((string)track_id, (string)artist_id, (string)track_name, (string)artist_name, image_urls);
 
