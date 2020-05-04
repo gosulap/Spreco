@@ -108,6 +108,7 @@ namespace Spreco.Controllers
 
             var data = JObject.Parse(responseString); 
 
+            // when we refresh the callback page we get an error here so check it out later this could be a problem 
             foreach(var track in data["items"])
             {
                 var track_object = JObject.Parse(track.ToString())["track"];
