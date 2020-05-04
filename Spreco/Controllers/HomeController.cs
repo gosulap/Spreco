@@ -11,6 +11,13 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Spreco.Models;
 
+/*
+ * Things to add/change 
+ * 1 - need to check if similar song already exists in users saved music - if it does dont show it 
+ * 2 - add button next to each song "save songs" 
+ * 3 - implement web player so people can listen to the song right here 
+*/
+
 namespace Spreco.Controllers
 {
     public class Track
@@ -224,17 +231,6 @@ namespace Spreco.Controllers
             //Console.WriteLine(access_token);
             //Console.WriteLine(refresh_token);
             //Console.WriteLine(expires_in);
-
-            // now we can use the api and get some actual information 
-
-            // first we need to get the recently played tracks - we could make a class to store the information we need 
-            // second we need to get tracks that are similar to each recently played track and map them together 
-            // third we need to get all the cover at and titles for all tracks to display 
-            // lastly we need to make it look good 
-
-
-            // maybe add the webplayer so people can try a song out right there 
-
 
             // https://api.spotify.com/v1/me/tracks/contains 
             // this check if one or more tracks is already saved by the user in "your songs" 

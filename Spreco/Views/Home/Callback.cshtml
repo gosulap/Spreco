@@ -3,18 +3,33 @@
     ViewData["Title"] = "Callback";
 }
 
-<h1>Callback</h1>
-@foreach (var item in ViewBag.mapping)
-{
-    <ul>
-        <li>
-            @item.Key.getTrackName()
+<div class="row">
+    <div class="col-6">
         <ul>
-            @foreach (var subItem in item.Value)
+            @foreach (var item in ViewBag.mapping)
             {
-                <li>@subItem.getTrackName()</li>
+                <li class="recent-track">
+                    <a class=@item.Key.getTrackId() href="#">@item.Key.getTrackName() by @item.Key.getArtistName()</a>
+                </li>
             }
         </ul>
-    </li>
-</ul>
-}
+    </div>
+    <div class="col-6">
+        @foreach (var item in ViewBag.mapping)
+        {
+            <div id=@item.Key.getTrackId()>
+                <ul>
+                    @foreach (var subItem in item.Value)
+                    {
+                        <li>@subItem.getTrackName() by @subItem.getArtistName()</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+<script src="~/js/callback.js" asp-append-version="true"></script>
+
