@@ -14,7 +14,6 @@ for (var i = 0; i < recentTracks.length; i++) {
     }); 
 }
 */
-
 var parallax_images = document.getElementsByClassName("parallax");
 
 for (var i = 0; i < parallax_images.length; i++) {
