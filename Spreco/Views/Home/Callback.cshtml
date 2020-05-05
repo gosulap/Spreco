@@ -33,18 +33,52 @@
 </div>
  -->
 
-@foreach (var item in ViewBag.mapping)
-{
-    <div class= "parallax" id=@item.Key.getImages()[0]></div>
-    <div class="similar-information">
-        <ul>
-            @foreach (var subItem in item.Value)
+<nav class="navbar fixed-top navbar-custom">
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Find Song
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            @foreach(var item in ViewBag.mapping)
             {
-                <li>@subItem.getTrackName() by @subItem.getArtistName()</li>
+                <a class="dropdown-item" href="#@item.Key.getImages()[0]">@item.Key.getTrackName()</a>
             }
-        </ul>
+        </div>
     </div>
-}
+    <a class="navbar-brand" href="#">
+        Export Songs as Playlist
+    </a>
+</nav>
+
+
+<div class="container-spreco">
+    @foreach (var item in ViewBag.mapping)
+    {
+        <div class="parallax" id=@item.Key.getImages()[0]></div>
+        <div class="similar-information">
+            <h3>Songs similar to @item.Key.getTrackName() by @item.Key.getArtistName()</h3>
+            <div class="contents">
+                @for (var i = 0; i < item.Value.Count; i += 3)
+                {
+                    <div class="row">
+                        @if (i < item.Value.Count)
+                        {
+                            <div class="col-4">@item.Value[i].getTrackName() by @item.Value[i].getArtistName()</div>
+                        }
+                        @if (i + 1 < item.Value.Count)
+                        {
+                            <div class="col-4">@item.Value[i + 1].getTrackName() by @item.Value[i + 1].getArtistName()</div>
+                        }
+                        @if (i + 2 < item.Value.Count)
+                        {
+                            <div class="col-4">@item.Value[i + 2].getTrackName() by @item.Value[i + 2].getArtistName()</div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
 
 
 <script src="~/js/callback.js" asp-append-version="true"></script>

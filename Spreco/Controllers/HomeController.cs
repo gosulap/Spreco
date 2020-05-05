@@ -248,6 +248,7 @@ namespace Spreco.Controllers
             Dictionary<Track, List<Track>> trackMapping = new Dictionary<Track, List<Track>>();
 
 
+            // can cluster these requests as well to help rate limit - do that later 
             // go through all the recently played tracks
             foreach (var track in recently_played)
             {

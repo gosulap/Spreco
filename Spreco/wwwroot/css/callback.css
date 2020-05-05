@@ -2,7 +2,7 @@
     /* The image used */
     background-image: url("https://i.scdn.co/image/ab67616d0000b273a52fb68f00620e45ed7467c5");
     /* Set a specific height */
-    min-height: 500px;
+    min-height: 300px;
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
     background-position: center;
@@ -10,10 +10,36 @@
     background-size: cover;
 }
 
-.similar-information {
-    min-height: 500px;
-    background-color: red;
-    font-size: 36px;
+ul{
+    margin: 0px; 
 }
 
+h3{
+    text-align:center; 
+}
 
+.contents{
+    margin-left: 10%;
+    margin-right: 10%; 
+}
+.similar-information {
+    background-color: #121212;
+    color: white;
+    font-size: 14px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.container-spreco{
+    /* space for sticky nav for something*/
+}
+
+.navbar-custom {
+    background-color: #121212;
+}
+/* Modify brand and text color */
+
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-text {
+    color: white;
+} 
