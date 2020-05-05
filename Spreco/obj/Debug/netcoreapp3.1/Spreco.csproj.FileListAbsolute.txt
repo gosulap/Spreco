@@ -108,3 +108,4 @@ C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Spreco.d
 C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Spreco.pdb
 C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Spreco.genruntimeconfig.cache
 C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Razor\Views\Home\Callback.cshtml.g.cs
+C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Razor\Views\Home\Export.cshtml.g.cs

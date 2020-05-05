@@ -4,15 +4,17 @@
 
 .parallax {
     /* The image used 
-    background-image: url("https://i.scdn.co/image/ab67616d0000b273a52fb68f00620e45ed7467c5"); */ 
-
+    background-image: url("https://i.scdn.co/image/ab67616d0000b273a52fb68f00620e45ed7467c5"); */
     /* Set a specific height */
-    min-height: 300px;
+    min-height: 420px;
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    -webkit-filter: blur(3px);
+    filter: blur(3px);
+    transform: scale(1.1);
 }
 
 ul{
@@ -21,6 +23,7 @@ ul{
 
 h3{
     text-align:center; 
+    font-weight: 300; 
 }
 
 .contents{
@@ -31,18 +34,13 @@ h3{
     background-color: #121212;
     color: white;
     font-size: 14px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-}
-
-.container-spreco{
-    /* space for sticky nav for something*/
+    padding-top: 42px;
+    padding-bottom: 42px;
 }
 
 .navbar-custom {
     background-color: #121212;
 }
-/* Modify brand and text color */
 
 .navbar-custom .navbar-brand,
 .navbar-custom .navbar-text {
@@ -54,6 +52,15 @@ h3{
     overflow-y: scroll;
     overflow-x: hidden;
     max-height: 400px;
+}
+
+.row div a{
+    text-decoration: none; 
+    color:white; 
+}
+
+.row a:hover {
+    color: #6c757d;
 }
 
 ::-webkit-scrollbar {

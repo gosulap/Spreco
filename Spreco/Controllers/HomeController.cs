@@ -66,6 +66,8 @@ namespace Spreco.Controllers
 
     public class HomeController : Controller
     {
+        
+        private string access_token; 
 
         private readonly ILogger<HomeController> _logger;
 
@@ -232,7 +234,8 @@ namespace Spreco.Controllers
             // access and refresh tokens are in this responsestring 
             var json = JObject.Parse(responseString); 
 
-            string access_token = (string) json["access_token"];
+            
+            this.access_token = (string) json["access_token"];
             string refresh_token = (string)json["refresh_token"];
             string expires_in = (string)json["expires_in"];
 
@@ -243,7 +246,7 @@ namespace Spreco.Controllers
             // https://api.spotify.com/v1/me/tracks/contains 
             // this check if one or more tracks is already saved by the user in "your songs" 
 
-            List<Track> recently_played = getRecentTracks(access_token);
+            List<Track> recently_played = getRecentTracks(this.access_token);
 
             Dictionary<Track, List<Track>> trackMapping = new Dictionary<Track, List<Track>>();
 
@@ -253,7 +256,7 @@ namespace Spreco.Controllers
             foreach (var track in recently_played)
             {
                 // for each track we need to get the similar tracks to it and associate the track with tracks that are similar
-                trackMapping.Add(track, getSimilarTracks(access_token, track.getArtistId(), track.getTrackId())); 
+                trackMapping.Add(track, getSimilarTracks(this.access_token, track.getArtistId(), track.getTrackId())); 
             }
 
             foreach (KeyValuePair<Track, List<Track>> kvp in trackMapping)
@@ -264,6 +267,11 @@ namespace Spreco.Controllers
 
             ViewBag.mapping = trackMapping; 
 
+            return View(); 
+        }
+
+        public IActionResult Export(string ids)
+        {
             return View(); 
         }
 
