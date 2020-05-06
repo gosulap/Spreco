@@ -186,6 +186,7 @@ namespace Spreco.Controllers
 
                 List<string> image_urls = new List<string>();
 
+                // got an exception here 
                 image_urls.Add((string)track_object["album"]["images"][0]["url"]);
                 image_urls.Add((string)track_object["album"]["images"][1]["url"]);
                 image_urls.Add((string)track_object["album"]["images"][2]["url"]);
@@ -272,6 +273,11 @@ namespace Spreco.Controllers
 
         public IActionResult Export(string ids)
         {
+            string[] track_ids = ids.Split(","); 
+            foreach(var id in track_ids)
+            {
+                Console.WriteLine(id); 
+            }
             return View(); 
         }
 
