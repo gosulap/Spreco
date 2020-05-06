@@ -166,11 +166,12 @@ namespace Spreco.Controllers
                           "&seed_tracks=" + seed_track; 
 
             var response = client.GetAsync(url).Result;
+            Console.WriteLine(response); 
 
             string responseString = response.Content.ReadAsStringAsync().Result;
 
             var data = JObject.Parse(responseString);
-
+            
             foreach (var track in data["tracks"])
             {
                 var track_object = JObject.Parse(track.ToString());
@@ -268,7 +269,7 @@ namespace Spreco.Controllers
             // getting the user id 
             var client = _clientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
-            string url = "https://api.spotify.com/v1/me"; 
+            string url = "https://api.spotify.com/v1/me";
             var response = client.GetAsync(url).Result;
             string responseString = response.Content.ReadAsStringAsync().Result;
             var data = JObject.Parse(responseString);
@@ -284,24 +285,41 @@ namespace Spreco.Controllers
             };
 
             var serializedRequest = JsonConvert.SerializeObject(postData);
-
             var requestBody = new StringContent(serializedRequest);
             requestBody.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            string url2 = "https://api.spotify.com/v1/users/" + user_id + "/playlists?name=SprecoTest";
 
-            string url2 = "https://api.spotify.com/v1/users/" + user_id + "/playlists?name=SprecoTest"; 
-
-
-            var response2 = client.PostAsync(url2,requestBody).Result;
-
+            var response2 = client.PostAsync(url2, requestBody).Result;
             string responseString2 = response2.Content.ReadAsStringAsync().Result;
             var data2 = JObject.Parse(responseString2);
-            string playlist_id = (string) data2["id"];
 
-            Console.WriteLine(playlist_id); 
+            string playlist_id = (string)data2["id"];
 
 
-            string[] track_ids = ids.Split(","); 
+            
+            string[] track_ids = ids.Split(",");
+            string[] cleaned_tracks = new string[track_ids.Length-1];
+            for (var i =0;i<cleaned_tracks.Length;i++)
+            {
+                cleaned_tracks[i] = "spotify:track:" + track_ids[i];
+            }
 
+            // adding songs to the playlist 
+            var client3 = _clientFactory.CreateClient();
+            client3.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+
+            var post_data3 = new Dictionary<string, string[]>();
+            post_data3["uris"] = cleaned_tracks; 
+
+            var serializedRequest3 = JsonConvert.SerializeObject(post_data3);
+            Console.WriteLine(serializedRequest3);
+            var requestBody3 = new StringContent(serializedRequest3);
+            requestBody3.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            string url3 = "https://api.spotify.com/v1/playlists/"+playlist_id+"/tracks";
+
+            var response3 = client3.PostAsync(url3, requestBody3).Result;
+            string responseString3 = response3.Content.ReadAsStringAsync().Result;
+            var data3 = JObject.Parse(responseString3);
 
             return View(); 
         }
