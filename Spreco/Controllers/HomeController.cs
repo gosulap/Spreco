@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Spreco.Models;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 // note: use image_urls[0] for parallax 
 
@@ -67,8 +69,6 @@ namespace Spreco.Controllers
     public class HomeController : Controller
     {
         
-        private string access_token; 
-
         private readonly ILogger<HomeController> _logger;
 
         private readonly IHttpClientFactory _clientFactory; 
@@ -87,7 +87,7 @@ namespace Spreco.Controllers
                           clientid +
                           "&response_type=code"+
                           "&redirect_uri=https://localhost:44336/home/callback" +
-                          "&scope=user-read-private%20user-read-email%20user-read-recently-played%20user-top-read" +
+                          "&scope=user-read-private%20user-read-email%20user-read-recently-played%20user-top-read%20playlist-modify-public" +
                           "&state=123";
 
             ViewBag.AuthUrl = url;
@@ -132,10 +132,6 @@ namespace Spreco.Controllers
                     image_urls.Add((string)track_object["album"]["images"][2]["url"]);
 
                     Track current = new Track((string)track_id, (string)artist_id, (string)track_name, (string)artist_name, image_urls);
-
-                    //Console.WriteLine(current.getTrackName());
-                    //Console.WriteLine(current.getArtistName());
-                    //Console.WriteLine(current.getImages()[0]);
 
                     tracks.Add(current);
                     seen.Add((string)track_id);
@@ -191,15 +187,7 @@ namespace Spreco.Controllers
                 image_urls.Add((string)track_object["album"]["images"][1]["url"]);
                 image_urls.Add((string)track_object["album"]["images"][2]["url"]);
 
-                Console.WriteLine(image_urls[0]);
-                Console.WriteLine(image_urls[1]);
-                Console.WriteLine(image_urls[2]);
-
                 Track current = new Track((string)track_id, (string)artist_id, (string)track_name, (string)artist_name, image_urls);
-
-                //Console.WriteLine(current.getTrackName());
-                //Console.WriteLine(current.getArtistName());
-                //Console.WriteLine(current.getImages()[0]);
 
                 tracks.Add(current);
 
@@ -236,7 +224,8 @@ namespace Spreco.Controllers
             var json = JObject.Parse(responseString); 
 
             
-            this.access_token = (string) json["access_token"];
+            string access_token = (string) json["access_token"];
+            HttpContext.Session.SetString("access_token", access_token);
             string refresh_token = (string)json["refresh_token"];
             string expires_in = (string)json["expires_in"];
 
@@ -247,7 +236,7 @@ namespace Spreco.Controllers
             // https://api.spotify.com/v1/me/tracks/contains 
             // this check if one or more tracks is already saved by the user in "your songs" 
 
-            List<Track> recently_played = getRecentTracks(this.access_token);
+            List<Track> recently_played = getRecentTracks(access_token);
 
             Dictionary<Track, List<Track>> trackMapping = new Dictionary<Track, List<Track>>();
 
@@ -257,7 +246,7 @@ namespace Spreco.Controllers
             foreach (var track in recently_played)
             {
                 // for each track we need to get the similar tracks to it and associate the track with tracks that are similar
-                trackMapping.Add(track, getSimilarTracks(this.access_token, track.getArtistId(), track.getTrackId())); 
+                trackMapping.Add(track, getSimilarTracks(access_token, track.getArtistId(), track.getTrackId())); 
             }
 
             foreach (KeyValuePair<Track, List<Track>> kvp in trackMapping)
@@ -273,11 +262,47 @@ namespace Spreco.Controllers
 
         public IActionResult Export(string ids)
         {
-            string[] track_ids = ids.Split(","); 
-            foreach(var id in track_ids)
+            Console.WriteLine("accestoken");
+            string access_token = HttpContext.Session.GetString("access_token");
+
+            // getting the user id 
+            var client = _clientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+            string url = "https://api.spotify.com/v1/me"; 
+            var response = client.GetAsync(url).Result;
+            string responseString = response.Content.ReadAsStringAsync().Result;
+            var data = JObject.Parse(responseString);
+            string user_id = (string)data["id"];
+
+            // need to make the playlist 
+            var client2 = _clientFactory.CreateClient();
+            client2.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+
+            var postData = new
             {
-                Console.WriteLine(id); 
-            }
+                name = "SprecoTest",
+            };
+
+            var serializedRequest = JsonConvert.SerializeObject(postData);
+
+            var requestBody = new StringContent(serializedRequest);
+            requestBody.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            string url2 = "https://api.spotify.com/v1/users/" + user_id + "/playlists?name=SprecoTest"; 
+
+
+            var response2 = client.PostAsync(url2,requestBody).Result;
+
+            string responseString2 = response2.Content.ReadAsStringAsync().Result;
+            var data2 = JObject.Parse(responseString2);
+            string playlist_id = (string) data2["id"];
+
+            Console.WriteLine(playlist_id); 
+
+
+            string[] track_ids = ids.Split(","); 
+
+
             return View(); 
         }
 
