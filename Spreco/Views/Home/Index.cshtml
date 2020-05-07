@@ -1,5 +1,17 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<link rel="stylesheet" href="~/css/index.css" />
 
-<a href =@ViewBag.AuthUrl> Login with Spotify </a>
+<div id="spreco-loginpack">
+    <h1 id="loginheader">Welcome to Spreco</h1>
+    <p id="logindescription">Insert Description here</p>
+    <button id="spreco-login" onclick="location.href='@ViewBag.AuthUrl'" type="button">
+        Login with Spotify
+    </button>
+</div>
+
+
+<div id="particles-js"></div>
+<script src ="~/js/particles.js"></script>
+<script src="~/js/index.js" asp-append-version="true"></script>

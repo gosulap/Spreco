@@ -2,4 +2,5 @@
     font-weight: 100; 
     /* the blue causes the screen to spread and create white bars on the sides of similar information, this combats that*/
     overflow-x: hidden; 
+    font-family: Helvetica, Arial, sans-serif;  
 }

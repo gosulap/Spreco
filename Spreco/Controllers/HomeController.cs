@@ -12,12 +12,12 @@ using Newtonsoft.Json.Linq;
 using Spreco.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System.Data;
 
 // note: use image_urls[0] for parallax 
 
 /*
  * Things to add/change 
- * 0 - parallax web design 
  * 1 - need to check if similar song already exists in users saved music - if it does dont show it 
  * 2 - add button next to each song "save songs" - or maybe "add to queue button" 
  * 3 - implement web player so people can listen to the song right here 
@@ -166,7 +166,7 @@ namespace Spreco.Controllers
                           "&seed_tracks=" + seed_track; 
 
             var response = client.GetAsync(url).Result;
-            Console.WriteLine(response); 
+            Console.WriteLine(response.Content); 
 
             string responseString = response.Content.ReadAsStringAsync().Result;
 
@@ -200,67 +200,73 @@ namespace Spreco.Controllers
         // at some point i think the user shuold be able to input tracks that they want to see similar songs for 
         public IActionResult Callback(string code)
         {
-            // things are the # are not even sent to the server so we cant see it here
 
-            // make a post request to get access and refresh tokens 
-            var client = _clientFactory.CreateClient(); 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("sprecoid") + ":" + Environment.GetEnvironmentVariable("sprecosecret"))));
-
-            FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
+            try
             {
+                // things are the # are not even sent to the server so we cant see it here
+
+                // make a post request to get access and refresh tokens 
+                var client = _clientFactory.CreateClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("sprecoid") + ":" + Environment.GetEnvironmentVariable("sprecosecret"))));
+
+                FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
+                {
                         new KeyValuePair<string, string>("code", code),
                         new KeyValuePair<string, string>("redirect_uri", "https://localhost:44336/home/callback"),
                         new KeyValuePair<string, string>("grant_type", "authorization_code"),
-             });
+                });
 
-            // using .Result causes the thread to block until the async function is done so consider changing this to make it faster 
-            var response = client.PostAsync("https://accounts.spotify.com/api/token", formContent).Result;
+                // using .Result causes the thread to block until the async function is done so consider changing this to make it faster 
+                var response = client.PostAsync("https://accounts.spotify.com/api/token", formContent).Result;
 
-            var responseContent = response.Content;
+                var responseContent = response.Content;
 
-            // using .Result causes the thread to block until the async function is done so consider changing this to make it faster 
-            string responseString = responseContent.ReadAsStringAsync().Result;
+                // using .Result causes the thread to block until the async function is done so consider changing this to make it faster 
+                string responseString = responseContent.ReadAsStringAsync().Result;
 
-            // access and refresh tokens are in this responsestring 
-            var json = JObject.Parse(responseString); 
-
-            
-            string access_token = (string) json["access_token"];
-            HttpContext.Session.SetString("access_token", access_token);
-            string refresh_token = (string)json["refresh_token"];
-            string expires_in = (string)json["expires_in"];
-
-            //Console.WriteLine(access_token);
-            //Console.WriteLine(refresh_token);
-            //Console.WriteLine(expires_in);
-
-            // https://api.spotify.com/v1/me/tracks/contains 
-            // this check if one or more tracks is already saved by the user in "your songs" 
-
-            List<Track> recently_played = getRecentTracks(access_token);
-
-            Dictionary<Track, List<Track>> trackMapping = new Dictionary<Track, List<Track>>();
+                // access and refresh tokens are in this responsestring 
+                var json = JObject.Parse(responseString);
 
 
-            // can cluster these requests as well to help rate limit - do that later 
-            // go through all the recently played tracks
-            foreach (var track in recently_played)
-            {
-                // for each track we need to get the similar tracks to it and associate the track with tracks that are similar
-                trackMapping.Add(track, getSimilarTracks(access_token, track.getArtistId(), track.getTrackId())); 
+                string access_token = (string)json["access_token"];
+                HttpContext.Session.SetString("access_token", access_token);
+                string refresh_token = (string)json["refresh_token"];
+                string expires_in = (string)json["expires_in"];
+
+                // https://api.spotify.com/v1/me/tracks/contains 
+                // this check if one or more tracks is already saved by the user in "your songs" 
+
+                List<Track> recently_played = getRecentTracks(access_token);
+
+                Dictionary<Track, List<Track>> trackMapping = new Dictionary<Track, List<Track>>();
+
+
+                // can cluster these requests as well to help rate limit - do that later 
+                // go through all the recently played tracks
+                foreach (var track in recently_played)
+                {
+                    // for each track we need to get the similar tracks to it and associate the track with tracks that are similar
+                    trackMapping.Add(track, getSimilarTracks(access_token, track.getArtistId(), track.getTrackId()));
+                }
+
+                foreach (KeyValuePair<Track, List<Track>> kvp in trackMapping)
+                {
+                    Console.WriteLine("Key = {0}, Value = {1}",
+                        kvp.Key.getTrackName(), kvp.Value[0].getTrackName());
+                }
+
+                ViewBag.mapping = trackMapping;
+
+                return View();
             }
-
-            foreach (KeyValuePair<Track, List<Track>> kvp in trackMapping)
+            catch
             {
-                Console.WriteLine("Key = {0}, Value = {1}",
-                    kvp.Key.getTrackName(), kvp.Value[0].getTrackName());
+                // the error view 
+                return View("~/Views/Home/Error.cshtml"); 
             }
-
-            ViewBag.mapping = trackMapping; 
-
-            return View(); 
         }
 
+        // this is some ugly code lmao 
         public IActionResult Export(string ids)
         {
             Console.WriteLine("accestoken");
@@ -281,13 +287,15 @@ namespace Spreco.Controllers
 
             var postData = new
             {
-                name = "SprecoTest",
+                name = "Spreco | "+ DateTime.Now.ToString("MM - dd - yyyy"),
             };
 
             var serializedRequest = JsonConvert.SerializeObject(postData);
             var requestBody = new StringContent(serializedRequest);
             requestBody.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            string url2 = "https://api.spotify.com/v1/users/" + user_id + "/playlists?name=SprecoTest";
+            string url2 = "https://api.spotify.com/v1/users/" + user_id + "/playlists";
+
+            Console.WriteLine(url2); 
 
             var response2 = client.PostAsync(url2, requestBody).Result;
             string responseString2 = response2.Content.ReadAsStringAsync().Result;
@@ -296,12 +304,26 @@ namespace Spreco.Controllers
             string playlist_id = (string)data2["id"];
 
 
-            
+            // track ids has an extra blank space at the end that we dont want 
             string[] track_ids = ids.Split(",");
-            string[] cleaned_tracks = new string[track_ids.Length-1];
+            
+            // count the number of unique things in trackids 
+            HashSet<string> unique_ids = new HashSet<string>(); 
+            for(var i = 0; i < track_ids.Length - 1; i++)
+            {
+                unique_ids.Add(track_ids[i]); 
+            }
+            
+            // cleaned tracks will be in post data 
+            string[] cleaned_tracks = new string[unique_ids.Count];
+            // unique tracks will be the set in array form 
+            string[] unique_tracks = new string[unique_ids.Count];
+            // get all the unique ids and put them in an array 
+            unique_ids.CopyTo(unique_tracks); 
+
             for (var i =0;i<cleaned_tracks.Length;i++)
             {
-                cleaned_tracks[i] = "spotify:track:" + track_ids[i];
+                cleaned_tracks[i] = "spotify:track:" + unique_tracks[i];
             }
 
             // adding songs to the playlist 
@@ -317,6 +339,7 @@ namespace Spreco.Controllers
             requestBody3.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             string url3 = "https://api.spotify.com/v1/playlists/"+playlist_id+"/tracks";
 
+            // really dont need anything after the post but its good to have just in case we need more information 
             var response3 = client3.PostAsync(url3, requestBody3).Result;
             string responseString3 = response3.Content.ReadAsStringAsync().Result;
             var data3 = JObject.Parse(responseString3);

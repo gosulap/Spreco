@@ -37,7 +37,7 @@
                     @if (i < item.Value.Count)
                     {
                         <div class="col-4">
-                            <a href="https://open.spotify.com/track/@item.Value[i].getTrackId()" target="_blank">
+                            <a href="https://open.spotify.com/track/@item.Value[i].getTrackId()" target="_blank" title="Open song in the Spotify Web Player">
                                 @item.Value[i].getTrackName() by @item.Value[i].getArtistName()
                             </a>
                         </div>
@@ -45,7 +45,7 @@
                     @if (i + 1 < item.Value.Count)
                     {
                         <div class="col-4">
-                            <a href="https://open.spotify.com/track/@item.Value[i+1].getTrackId()" target="_blank">
+                            <a href="https://open.spotify.com/track/@item.Value[i+1].getTrackId()" target="_blank" title="Open song in the Spotify Web Player">
                                 @item.Value[i+1].getTrackName() by @item.Value[i+1].getArtistName()
                             </a>
                         </div>
@@ -53,7 +53,7 @@
                     @if (i + 2 < item.Value.Count)
                     {
                         <div class="col-4">
-                            <a href="https://open.spotify.com/track/@item.Value[i+2].getTrackId()" target="_blank">
+                            <a href="https://open.spotify.com/track/@item.Value[i+2].getTrackId()" target="_blank" title="Open song in the Spotify Web Player">
                                 @item.Value[i+2].getTrackName() by @item.Value[i+2].getArtistName()
                             </a>
                         </div>

@@ -1,0 +1,38 @@
+﻿#particles-js {
+    height: 100%;
+    width: 100%; 
+    background-color: #121212;
+    position: relative;
+    z-index: -1;
+}
+
+#spreco-loginpack {
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    right: 0px;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+#loginheader{
+    color:white;
+}
+
+
+#logindescription{
+    color:white; 
+}
+
+#spreco-login {
+    background-color: white;
+    border: none;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 16px;
+}
