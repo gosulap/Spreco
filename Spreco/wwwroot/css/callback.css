@@ -59,35 +59,3 @@ h3{
 .row a:hover {
     color: #6c757d;
 }
-
-::-webkit-scrollbar {
-    width: 16px !important;
-    height: 16px !important;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #6c757d !important;
-    background-clip: padding-box !important;
-    border: 4px solid transparent !important;
-    -webkit-border-radius: 8px !important;
-    border-radius: 8px !important;
-    -webkit-box-shadow: none !important;
-    box-shadow: none !important;
-    min-height: 50px !important;
-    min-width: 50px !important;
-}
-
-::-webkit-scrollbar-track {
-    background: none !important;
-    border: none !important;
-}
-
-::-webkit-scrollbar-track:vertical:hover {
-    border-left: 1px solid rgba(0,0,0,.1) !important;
-    background: rgba(0,0,0,.05) !important;
-}
-
-::-webkit-scrollbar-track:horizontal:hover {
-    border-top: 1px solid rgba(0,0,0,.1) !important;
-    background: rgba(0,0,0,.05) !important;
-}​ 
