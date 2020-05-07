@@ -26,7 +26,9 @@
 <div class="container-spreco">
     @foreach (var item in ViewBag.mapping)
     {
-        <div class="parallax" id=@item.Key.getImages()[0]></div>
+        <div class="parallax-container">
+            <div class="parallax" id=@item.Key.getImages()[0]></div>
+        </div> 
         <div class="similar-information">
             <h3>Inspired by:  @item.Key.getTrackName() - @item.Key.getArtistName()</h3>
             <div class="contents">

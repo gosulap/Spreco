@@ -10,9 +10,10 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    -webkit-filter: blur(2px);
-    filter: blur(2px);
-    transform: scale(1.03);
+    -webkit-filter: blur(4px);
+    filter: blur(4px);
+    /* need to increase the scale when increasing blur*/
+    transform: scale(1.1);
 }
 
 ul{
@@ -58,4 +59,9 @@ h3{
 
 .row a:hover {
     color: #6c757d;
+}
+
+
+.parallax-container{
+    overflow: hidden; 
 }
