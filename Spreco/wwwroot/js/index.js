@@ -12,6 +12,11 @@ button.addEventListener("click", function () {
         loginpack.children[i].style.visibility = "hidden";
     }
 
+    var particles = document.getElementById("particles-js");
+    particles.style.visibility = "hidden"; 
+
+    document.body.style.backgroundColor = "#121212"; 
+
     var loader = document.getElementById("spreco-loader");
     loader.style.visibility = "visible"; 
 }); 
