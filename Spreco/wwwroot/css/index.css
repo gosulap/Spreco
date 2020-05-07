@@ -13,19 +13,26 @@
     right: 0px;
     transform: translateY(-50%);
     text-align: center;
+    font-weight: 100; 
 }
 
+#sprecoabout{
+    text-decoration: none;
+    color: white; 
+}
 #loginheader{
     color:white;
+    margin-bottom: 1%; 
 }
 
 
 #logindescription{
     color:white; 
+    margin-bottom: 10%; 
 }
 
 #spreco-login {
-    background-color: white;
+    background-color: #1DB954;
     border: none;
     color: black;
     padding: 10px 20px;

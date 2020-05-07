@@ -110,3 +110,4 @@ C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Spreco.g
 C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Razor\Views\Home\Callback.cshtml.g.cs
 C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Razor\Views\Home\Export.cshtml.g.cs
 C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Razor\Views\Home\Error.cshtml.g.cs
+C:\Users\pradh\OneDrive\Documents\Spreco\Spreco\obj\Debug\netcoreapp3.1\Razor\Views\Home\About.cshtml.g.cs
