@@ -17,8 +17,8 @@
             }
         </div>
     </div>
-    <a id="spreco-export" class="navbar-brand" href="/home/export">
-        Export Songs as Playlist
+    <a id="spreco-export" class="navbar-brand" href="/home/export" title="The song at the top of each column is considered a top song for each track and will be exported">
+        Export ►
     </a>
 </nav>
 
@@ -34,33 +34,32 @@
             <div class="contents">
                 @for (var i = 0; i < item.Value.Count; i += 3)
                 {
-                    <!-- https://open.spotify.com/track/6QT52j2GlfXHGR2sSCHLAU?si=qU8C4Y3yR960nd6oufhl1A -->
-                <div class="row">
-                    @if (i < item.Value.Count)
-                    {
-                        <div class="col-4">
-                            <a href="https://open.spotify.com/track/@item.Value[i].getTrackId()" target="_blank" title="Open song in the Spotify Web Player">
-                                @item.Value[i].getTrackName() by @item.Value[i].getArtistName()
-                            </a>
-                        </div>
-                    }
-                    @if (i + 1 < item.Value.Count)
-                    {
-                        <div class="col-4">
-                            <a href="https://open.spotify.com/track/@item.Value[i+1].getTrackId()" target="_blank" title="Open song in the Spotify Web Player">
-                                @item.Value[i+1].getTrackName() by @item.Value[i+1].getArtistName()
-                            </a>
-                        </div>
-                    }
-                    @if (i + 2 < item.Value.Count)
-                    {
-                        <div class="col-4">
-                            <a href="https://open.spotify.com/track/@item.Value[i+2].getTrackId()" target="_blank" title="Open song in the Spotify Web Player">
-                                @item.Value[i+2].getTrackName() by @item.Value[i+2].getArtistName()
-                            </a>
-                        </div>
-                    }
-                </div>
+                    <div class="row">
+                        @if (i < item.Value.Count)
+                        {
+                            <div class="col-4">
+                                <a href="https://open.spotify.com/track/@item.Value[i].getTrackId()" target="_blank" title="Open song in the Spotify Web Player">
+                                    @item.Value[i].getTrackName() by @item.Value[i].getArtistName()
+                                </a>
+                            </div>
+                        }
+                        @if (i + 1 < item.Value.Count)
+                        {
+                            <div class="col-4">
+                                <a href="https://open.spotify.com/track/@item.Value[i+1].getTrackId()" target="_blank" title="Open song in the Spotify Web Player">
+                                    @item.Value[i+1].getTrackName() by @item.Value[i+1].getArtistName()
+                                </a>
+                            </div>
+                        }
+                        @if (i + 2 < item.Value.Count)
+                        {
+                            <div class="col-4">
+                                <a href="https://open.spotify.com/track/@item.Value[i+2].getTrackId()" target="_blank" title="Open song in the Spotify Web Player">
+                                    @item.Value[i+2].getTrackName() by @item.Value[i+2].getArtistName()
+                                </a>
+                            </div>
+                        }
+                    </div>
                 }
             </div>
         </div>

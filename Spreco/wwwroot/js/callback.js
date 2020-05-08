@@ -27,7 +27,6 @@ var ids = [];
 for (var i = 0; i < tracks.length; i++) {
     var temp = tracks[i].childNodes[3]; 
     for (var j = 1; j < 6; j += 2) {
-        console.log(temp.childNodes[j].childNodes[1].href); 
         ids.push(temp.childNodes[j].childNodes[1].href.split("https://open.spotify.com/track/")[1]); 
     }
 }

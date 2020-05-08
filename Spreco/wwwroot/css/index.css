@@ -16,13 +16,15 @@
     font-weight: 100; 
 }
 
-#sprecoabout{
+#sprecoabout {
     text-decoration: none;
-    color: white; 
+    color: #1DB954;
 }
+
 #loginheader{
     color:white;
     margin-bottom: 1%; 
+    font-size: 4em; 
 }
 
 

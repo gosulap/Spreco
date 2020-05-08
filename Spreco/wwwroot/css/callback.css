@@ -43,7 +43,7 @@ h3{
 
 .navbar-custom .navbar-brand,
 .navbar-custom .navbar-text {
-    color: white;
+    color: #1DB954;
 }
 
 .dropdown-menu{
@@ -65,3 +65,4 @@ h3{
 .parallax-container{
     overflow: hidden; 
 }
+

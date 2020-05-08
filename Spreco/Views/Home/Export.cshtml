@@ -2,8 +2,12 @@
 @{
     ViewData["Title"] = "Export";
 }
+<link rel="stylesheet" href="~/css/export.css" />
 
-<h1>The Songs were sucessfully exported!</h1>
-<p>Go to Spotify and look for the playlist name @ViewBag.playlistname</p>
+<div id="spreco-message">
+    <h1>The Songs were sucessfully exported!</h1>
+    <p>Go to Spotify and look for the playlist name <span id="playlist-name">@ViewBag.playlistname</span></p>
+</div>
+
 
 
