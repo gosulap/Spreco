@@ -1,0 +1,15 @@
+﻿body {
+    background-color: #121212;
+    display: flex;
+    justify-content: center;
+}
+
+#spreco-message {
+    margin-top: 17%; 
+    color: white;
+    text-align: center; 
+}
+
+#playlist-name {
+    color: #1DB954; 
+}

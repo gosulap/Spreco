@@ -86,10 +86,11 @@ namespace Spreco.Controllers
             string url = "https://accounts.spotify.com/authorize?client_id=" +
                           clientid +
                           "&response_type=code"+
-                          "&redirect_uri=https://localhost:44336/home/callback" +
+                          //https://localhost:44336/home/callback
+                          //https://spreco.azurewebsites.net/home/callback
+                          "&redirect_uri=https://spreco.azurewebsites.net/home/callback" +
                           "&scope=user-read-private%20user-read-email%20user-read-recently-played%20user-top-read%20playlist-modify-public" +
                           "&state=123";
-
             ViewBag.AuthUrl = url;
 
             return View();
@@ -106,7 +107,7 @@ namespace Spreco.Controllers
             var client = _clientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
 
-            var response = client.GetAsync("https://api.spotify.com/v1/me/player/recently-played").Result;
+            var response = client.GetAsync("https://api.spotify.com/v1/me/player/recently-played?limit=25").Result;
             string responseString = response.Content.ReadAsStringAsync().Result;
 
             HashSet<string> seen = new HashSet<string>(); 
@@ -212,7 +213,9 @@ namespace Spreco.Controllers
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
                 {
                         new KeyValuePair<string, string>("code", code),
-                        new KeyValuePair<string, string>("redirect_uri", "https://localhost:44336/home/callback"),
+                           //https://localhost:44336/home/callback
+                          //https://spreco.azurewebsites.net/home/callback
+                        new KeyValuePair<string, string>("redirect_uri", "https://spreco.azurewebsites.net/home/callback"),
                         new KeyValuePair<string, string>("grant_type", "authorization_code"),
                 });
 
