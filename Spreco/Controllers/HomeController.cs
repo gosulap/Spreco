@@ -14,14 +14,6 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Data;
 
-// note: use image_urls[0] for parallax 
-
-/*
- * Things to add/change 
- * 1 - need to check if similar song already exists in users saved music - if it does dont show it 
- * 2 - add button next to each song "save songs" - or maybe "add to queue button" 
- * 3 - implement web player so people can listen to the song right here 
-*/
 
 namespace Spreco.Controllers
 {
@@ -81,7 +73,6 @@ namespace Spreco.Controllers
 
         public IActionResult Index()
         {
-            // setting up the url to take the user through spotify auth 
             string clientid = Environment.GetEnvironmentVariable("sprecoid");
             string url = "https://accounts.spotify.com/authorize?client_id=" +
                           clientid +
@@ -96,9 +87,6 @@ namespace Spreco.Controllers
             return View();
         }
         
-        // this is working 
-        // need this to return an array of tracks
-        // ITLL GIVE US DUPLICATE TRACKS SO ELIMINATE ONES WE HAVE ALREADY SEEN
         private List<Track> getRecentTracks(string access_token)
         {
 
@@ -114,7 +102,6 @@ namespace Spreco.Controllers
 
             var data = JObject.Parse(responseString); 
 
-            // when we refresh the callback page we get an error here so check it out later this could be a problem 
             foreach(var track in data["items"])
             {
                 var track_object = JObject.Parse(track.ToString())["track"];
@@ -144,20 +131,12 @@ namespace Spreco.Controllers
             return tracks; 
            
         }
-
-
-        // this worked 
-        // need to get this to return an array of tracks 
-        // need to pass in artist id, track id
-        // we should also check for similar tracks that the user does not already have in a playlist 
+ 
         private List<Track> getSimilarTracks(string access_token, string seed_artist, string seed_track)
         {
 
             List<Track> tracks = new List<Track>(); 
 
-            //need to pass this in later 
-            //string artist_test = "0Y5tJX1MQlPlqiwlOH1tJY";
-            //string track_test = "3dtBVBClM5ms0qCBBrqpUb"; 
 
             var client = _clientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
@@ -184,7 +163,6 @@ namespace Spreco.Controllers
 
                 List<string> image_urls = new List<string>();
 
-                // got an exception here 
                 image_urls.Add((string)track_object["album"]["images"][0]["url"]);
                 image_urls.Add((string)track_object["album"]["images"][1]["url"]);
                 image_urls.Add((string)track_object["album"]["images"][2]["url"]);
@@ -197,18 +175,15 @@ namespace Spreco.Controllers
 
             return tracks; 
         }
-
-        // at some point i think the user shuold be able to input tracks that they want to see similar songs for 
+ 
         public IActionResult Callback(string code)
         {
 
             try
             {
-                // things are the # are not even sent to the server so we cant see it here
-
                 // make a post request to get access and refresh tokens 
                 var client = _clientFactory.CreateClient();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("sprecoid") + ":" + Environment.GetEnvironmentVariable("sprecosecret"))));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("sprecoid-") + ":" + Environment.GetEnvironmentVariable("sprecosecret"))));
 
                 FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
                 {
